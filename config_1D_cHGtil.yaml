@@ -1,0 +1,152 @@
+#these are called; they keys will remain the same in the python code, so you only need to change the values
+#keys : values
+main_dir: /project/atlas/users/sabdadin/output
+plot_dir: /project/atlas/users/sabdadin/output/plots
+
+# Name of setup file (without the .h5)
+setup_file: /project/atlas/users/sabdadin/output/setup_1D_cHGtil
+
+# Name of the cards_folder
+cards_folder_name: cards_ggF
+
+# If running pythia, the path for the Pythia card
+pythia_card: cards_ggF/pythia8_card.dat
+
+# Path for MadGraph installation
+mg_dir: /cvmfs/sw.el7/gcc63/madgraph/3.3.1/b01/
+
+# If running delphes, the path for the Delphes card
+delphes_card: cards_ggF/delphes_card_ATLAS_v1.tcl 
+sample_name: ggf_signal_plus_ttbar #S+B
+# sample_name: ttbar ##background
+# sample_name: ggf_combined_signal #S Only
+alices:
+
+# Augmentation with alices 
+  augmentation:
+    n_samples:  -1
+    n_thetas:  10000
+    priors: 
+      - ["flat", -0.5, 0.5]
+    prior_name: alices_uniform_prior_-0.5_0.5_10000_thetas_10e7_samples_CP_odd
+    n_processes: 6
+
+  training:
+    observables: kinematic_only
+    n_hidden: [100,100]
+    activation:  tanh
+    training_samples_name: alices_uniform_prior_-0.5_0.5_10000_thetas_10e7_samples_CP_odd #alices_gaussian_prior_0_1.2_10000_thetas_10e7_samples_CP_odd
+    alpha: 1 
+    n_workers: 2
+    n_samples: -1  #474100
+    n_epochs: 50
+    batch_size: 128
+    nestimators: 5 #number of estimators for ALICES method NN ensemble 
+
+sally:
+
+  augmentation:
+    n_samples:  -1
+
+
+# Augmentation with sally (good idea for the training and testing to be consistent)
+  training:
+    observables:  kinematic_only
+    n_hidden: [100,100] #was 50
+    activation: relu
+    n_workers: 4
+    n_samples:  -1 #474100
+    n_epochs: 50 
+    batch_size: 128 
+    nestimators: 5 #number of estimators for SALLY method NN ensemble #was 5
+
+###### Plotting - limits
+
+# limits:
+
+#   # what to use to extract the limits, given as input to the expected_limits function, choices = ['rate','histo','sally', 'ml']
+#   mode: sally
+#   nestimators: 5
+#   # which of the training observable sets to use when extracting limits from a ALICES, ALICE or ml  method
+#   observables: 'kinematic_only' #prev: all_observables_remove_redundant_cos #all_observables_remove_redundant_cos
+
+#   prior: sally #prev:alices_gaussian_prior_0_0.4_10000_thetas_200000_samples
+
+#   # which of the architecture model (for each of the input variable configurations) to use
+#   model: sally_hidden_[100]_tanh_epochs_50_bs_100 #prev:alices_hidden_[50]_relu_alpha_5_epochs_100_bs_128 #alices_hidden_[100, 100]_tanh_alpha_0_epochs_50_bs_128
+
+#   #ALICE, ALICES or SALLY
+#   method: sally
+
+#   # if the limits are derived in shape-only histograms (i.e. without Poisson likelihood term)
+#   shape_only: False 
+  
+#   # which of the observables to use in the x-axis if extracting limits from histograms; required='histo' 
+#   observable_x: None
+
+#   # which of the observables to use in the y-axis if extracting limits from histograms; required='histo'
+#   observable_y: None
+
+#   # binning of the variable in the x-axis (can either be a standard observable or output of the ALICES/ALICE/SALLY network), type=float
+#   binning_x: None 
+
+#   # binning of the variable in the y-axis, type=float
+#   binning_y: None
+
+#   # whether or not to do histograms of likelihood in log_scale
+#   do_log: False
+
+#   # process charge+flavor inclusive samples',type=int
+#   lumi: 300
+
+#   # turns on debug functions
+#   debug: False
+
+#   grid_ranges: [-2,2]
+
+#   grid_resolutions: 5000
+##########
+limits:
+
+  # what to use to extract the limits, given as input to the expected_limits function, choices = ['rate','histo','sally', 'ml']
+  mode: ml
+  nestimators: 5
+  # which of the training observable sets to use when extracting limits from a ALICES, ALICE or ml  method
+  observables: 'kinematic_only' 
+
+  prior: alices_uniform_prior_-0.5_0.5_10000_thetas_10e7_samples_CP_odd #alices_gaussian_prior_0_1.2_10000_thetas_10e7_samples_CP_odd
+
+  # which of the architecture model (for each of the input variable configurations) to use
+  model: alices_hidden_[100, 100]_tanh_alpha_1_epochs_50_bs_128
+  #ALICE, ALICES or SALLY
+  method: alices
+
+  # if the limits are derived in shape-only histograms (i.e. without Poisson likelihood term)
+  shape_only: False 
+  
+  # which of the observables to use in the x-axis if extracting limits from histograms; required='histo' 
+  observable_x: None
+
+  # which of the observables to use in the y-axis if extracting limits from histograms; required='histo'
+  observable_y: None
+
+  # binning of the variable in the x-axis (can either be a standard observable or output of the ALICES/ALICE/SALLY network), type=float
+  binning_x: None 
+
+  # binning of the variable in the y-axis, type=float
+  binning_y: None
+
+  # whether or not to do histograms of likelihood in log_scale
+  do_log: False
+
+  # process charge+flavor inclusive samples',type=int
+  lumi: 300
+
+  # turns on debug functions
+  debug: False
+
+  grid_ranges: [-0.5,0.5]
+
+  grid_resolutions: 801
+
+  
